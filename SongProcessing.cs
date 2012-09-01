@@ -16,6 +16,7 @@ namespace myplayer
         public string album;
         public int year;
         public string path;
+        public string rootdir;
     };
     public static class SongProcessing
     {
@@ -30,27 +31,82 @@ namespace myplayer
             if (objFolder != null)
             {
                 FolderItem fi = objFolder.ParseName(filename);
+                if (!String.IsNullOrEmpty(objFolder.GetDetailsOf(fi, 31)))
+                {
+                    songInfo.path = "";
+                }
                 songInfo.name = objFolder.GetDetailsOf(fi, 21);
                 songInfo.album = objFolder.GetDetailsOf(fi, 14);
                 songInfo.artist = objFolder.GetDetailsOf(fi, 20);
-                songInfo.year = int.Parse(objFolder.GetDetailsOf(fi, 15));
+                string year_string = objFolder.GetDetailsOf(fi, 15);
+                if (!String.IsNullOrEmpty(year_string))
+                {
+                    songInfo.year = int.Parse(year_string);
+                }
+                else
+                {
+                    songInfo.year = 0;
+                }
+                if (songInfo.name.Contains("'"))
+                {
+                    songInfo.name = songInfo.name.Replace("'", "`");
+                }
+                if (songInfo.album.Contains("'"))
+                {
+                    songInfo.album = songInfo.album.Replace("'", "`");
+                }
+                if (songInfo.artist.Contains("'"))
+                {
+                    songInfo.artist = songInfo.artist.Replace("'", "`");
+                }
+                if (songInfo.path.Contains("'"))
+                {
+                    songInfo.path = songInfo.path.Replace("'", "`");
+                }
             }
-    
+
             return songInfo;
         }
 
-        public static bool ProcessSong(string filepath)
+        public static bool ProcessSong(string filepath, string rootdir)
         {
+            Audio a = null;
             try
             {
-                Audio a = new Audio(filepath);
+                SongDbItems song = GetSongInfo(filepath);
+                if (String.IsNullOrEmpty(song.path))
+                {
+                    return false;
+                }
+                a = new Audio(filepath);
+                if (a.Duration == 0.0)
+                {
+                    a.Dispose();
+                    return false;
+                }
                 SongQueue.queueMutex.WaitOne();
-                SongQueue.items.Enqueue(GetSongInfo(filepath));
+                song.rootdir = rootdir;
+                if (song.rootdir.Contains("'"))
+                {
+                    song.rootdir = song.rootdir.Replace("'", "`");
+                }
+                SongQueue.items.Enqueue(song);
                 SongQueue.queueMutex.ReleaseMutex();
+                a.Dispose();
             }
             catch
             {
-                SongQueue.queueMutex.ReleaseMutex();
+                try
+                {
+                    if (a != null)
+                    {
+                        a.Dispose();
+                    }
+                    SongQueue.queueMutex.ReleaseMutex();
+                }
+                catch
+                {
+                }
                 return false;
             }
             return true;
@@ -58,21 +114,113 @@ namespace myplayer
 
         public static bool SetSongName(string filepath, string songname)
         {
+            try
+            {
+                SongDbItems song = GetSongInfo(filepath);
+                if (String.IsNullOrEmpty(song.path))
+                {
+                    return false;
+                }
+                song.name = songname.Replace("'", ".");
+                SongQueue.queueMutex.WaitOne();
+                SongQueue.items.Enqueue(song);
+                SongQueue.queueMutex.ReleaseMutex();
+            }
+            catch
+            {
+                try
+                {
+                    SongQueue.queueMutex.ReleaseMutex();
+                }
+                catch
+                {
+                }
+                return false;
+            }
             return true;
         }
 
         public static bool SetSongAlbum(string filepath, string albumname)
         {
+            try
+            {
+                SongDbItems song = GetSongInfo(filepath);
+                if (String.IsNullOrEmpty(song.path))
+                {
+                    return false;
+                }
+                song.album = albumname.Replace("'", ".");
+                SongQueue.queueMutex.WaitOne();
+                SongQueue.items.Enqueue(song);
+                SongQueue.queueMutex.ReleaseMutex();
+            }
+            catch
+            {
+                try
+                {
+                    SongQueue.queueMutex.ReleaseMutex();
+                }
+                catch
+                {
+                }
+                return false;
+            }
             return true;
         }
 
         public static bool SetSongYear(string filepath, int year)
         {
+            try
+            {
+                SongDbItems song = GetSongInfo(filepath);
+                if (String.IsNullOrEmpty(song.path))
+                {
+                    return false;
+                }
+                song.year = year;
+                SongQueue.queueMutex.WaitOne();
+                SongQueue.items.Enqueue(song);
+                SongQueue.queueMutex.ReleaseMutex();
+            }
+            catch
+            {
+                try
+                {
+                    SongQueue.queueMutex.ReleaseMutex();
+                }
+                catch
+                {
+                }
+                return false;
+            }
             return true;
         }
 
         public static bool SetSongArtist(string filepath, string artistname)
         {
+            try
+            {
+                SongDbItems song = GetSongInfo(filepath);
+                if (String.IsNullOrEmpty(song.path))
+                {
+                    return false;
+                }
+                song.artist = artistname.Replace("'", ".");
+                SongQueue.queueMutex.WaitOne();
+                SongQueue.items.Enqueue(song);
+                SongQueue.queueMutex.ReleaseMutex();
+            }
+            catch
+            {
+                try
+                {
+                    SongQueue.queueMutex.ReleaseMutex();
+                }
+                catch
+                {
+                }
+                return false;
+            }
             return true;
         }
     }

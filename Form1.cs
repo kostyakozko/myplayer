@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Data.SqlServerCe;
+using System.Threading;
 
 namespace myplayer
 {
@@ -34,7 +35,10 @@ namespace myplayer
                     MessageBoxIcon.Error);
                 this.Close();
             }
-            //FolderProcessing.AddFolderToDB("F:\\netbook\\mydocs\\My Music", dirpath+"\\"+filename);
+            FolderProcessing.FoldersToAdd.Enqueue("F:\\netbook\\mydocs\\My Music");
+            Thread processThread = new Thread(FolderProcessing.ProcessAll);
+            processThread.Start(dirpath + "\\" + filename);
+            //FolderProcessing.ProcessAll(dirpath + "\\" + filename);
             //FolderProcessing.DeleteFolderFromDB("F:\\vm\\", dirpath + "\\" + filename);
             //SongProcessing.ProcessSong(
                 //"F:\\netbook\\mydocs\\My Music\\+ Кипелов\\2005 - Реки Времен\\03 - Пророк.mp3");
