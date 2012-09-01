@@ -37,6 +37,7 @@ namespace myplayer
             }
             FolderProcessing.FoldersToAdd.Enqueue("F:\\netbook\\mydocs\\My Music");
             Thread processThread = new Thread(FolderProcessing.ProcessAll);
+            processThread.IsBackground = true;
             processThread.Start(dirpath + "\\" + filename);
             //FolderProcessing.ProcessAll(dirpath + "\\" + filename);
             //FolderProcessing.DeleteFolderFromDB("F:\\vm\\", dirpath + "\\" + filename);

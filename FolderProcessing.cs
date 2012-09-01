@@ -329,6 +329,7 @@ namespace myplayer
         public static void ProcessAll(object dbfilepath)
         {
             Thread songInfoUpdater = new Thread(FolderProcessing.UpdateSongInfoOnWork);
+            songInfoUpdater.IsBackground = true;
             songInfoUpdater.Start((string)dbfilepath);
             foreach (string s in FolderProcessing.FoldersToAdd)
             {
@@ -336,6 +337,7 @@ namespace myplayer
                 folder_params fp = new folder_params();
                 fp.filepath = (string)dbfilepath;
                 fp.folderpath = s;
+                addfolder.IsBackground = true;
                 addfolder.Start(fp);
                 addfolder.Join();
             }
