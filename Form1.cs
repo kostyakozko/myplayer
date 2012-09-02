@@ -12,7 +12,6 @@ using System.Threading;
 
 namespace myplayer
 {
-    
     public partial class Form1 : Form
     {
         public Form1()
@@ -35,7 +34,7 @@ namespace myplayer
                     MessageBoxIcon.Error);
                 this.Close();
             }
-            FolderProcessing.FoldersToAdd.Enqueue("F:\\netbook\\mydocs\\My Music");
+            FolderProcessing.FoldersToAdd.Enqueue("C:\\Users\\student\\Music");
             Thread processThread = new Thread(FolderProcessing.ProcessAll);
             processThread.IsBackground = true;
             processThread.Start(dirpath + "\\" + filename);

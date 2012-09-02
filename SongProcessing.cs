@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using Shell32;
 using Microsoft.DirectX.AudioVideoPlayback;
+using System.Threading;
 
 namespace myplayer
 {
@@ -20,6 +21,7 @@ namespace myplayer
     };
     public static class SongProcessing
     {
+
         private static SongDbItems GetSongInfo(string filepath)
         {
             SongDbItems songInfo = new SongDbItems();
@@ -71,6 +73,9 @@ namespace myplayer
         public static bool ProcessSong(string filepath, string rootdir)
         {
             Audio a = null;
+            player.URL = filepath;
+            player.Ctlcontrols.play();
+            player.Ctlcontrols.stop();
             try
             {
                 SongDbItems song = GetSongInfo(filepath);

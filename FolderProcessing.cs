@@ -311,7 +311,7 @@ namespace myplayer
                 SongQueue.queueMutex.ReleaseMutex();
                 if (SongQueue.items.Count == 0)
                 {
-                    MessageBox.Show("Nothing to do", sleeptime.ToString());
+                    //MessageBox.Show("Nothing to do", sleeptime.ToString());
                     Thread.Sleep(sleeptime);
                     sleeptime *= 2;
                 }
