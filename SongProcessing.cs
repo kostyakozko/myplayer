@@ -12,6 +12,7 @@ namespace myplayer
 {
     public struct SongDbItems
     {
+        public int id;
         public string name;
         public string artist;
         public string album;
@@ -33,10 +34,6 @@ namespace myplayer
             if (objFolder != null)
             {
                 FolderItem fi = objFolder.ParseName(filename);
-                if (!String.IsNullOrEmpty(objFolder.GetDetailsOf(fi, 31)))
-                {
-                    songInfo.path = "";
-                }
                 songInfo.name = objFolder.GetDetailsOf(fi, 21);
                 songInfo.album = objFolder.GetDetailsOf(fi, 14);
                 songInfo.artist = objFolder.GetDetailsOf(fi, 20);
@@ -72,25 +69,14 @@ namespace myplayer
 
         public static bool ProcessSong(string filepath, string rootdir)
         {
-            /*Audio a = null;*/
             try
             {
-		if (Path.GetExtension (filepath) != "mp3" &&
-		    Path.GetExtension (filepath) != "wav")
-		{
-		    return false;
-		}
-                SongDbItems song = GetSongInfo(filepath);
-                if (String.IsNullOrEmpty(song.path))
+                if (Path.GetExtension(filepath) != ".mp3" &&
+                    Path.GetExtension(filepath) != ".wav")
                 {
                     return false;
                 }
-                /*a = new Audio(filepath);
-                if (a.Duration == 0.0)
-                {
-                    a.Dispose();
-                    return false;
-                }*/
+                SongDbItems song = GetSongInfo(filepath);
                 SongQueue.queueMutex.WaitOne();
                 song.rootdir = rootdir;
                 if (song.rootdir.Contains("'"))
@@ -99,16 +85,11 @@ namespace myplayer
                 }
                 SongQueue.items.Enqueue(song);
                 SongQueue.queueMutex.ReleaseMutex();
-                //a.Dispose();
             }
             catch
             {
                 try
                 {
-                    /*if (a != null)
-                    /{
-                        a.Dispose();
-                    }*/
                     SongQueue.queueMutex.ReleaseMutex();
                 }
                 catch

@@ -14,12 +14,15 @@ namespace myplayer
 {
     public partial class Form1 : Form
     {
+        private string pathWithEnv;
+        private string dirpath;
+        private string filename;
         public Form1()
         {
             InitializeComponent();
-            string pathWithEnv = @"%AllUsersProfile%\myplayer";
-            string dirpath = Environment.ExpandEnvironmentVariables(pathWithEnv);
-            string filename = "playerdb.sdf";
+            pathWithEnv = @"%AllUsersProfile%\myplayer";
+            dirpath = Environment.ExpandEnvironmentVariables(pathWithEnv);
+            filename = "playerdb.sdf";
             if (!DbInitializer.InitDb(dirpath, filename))
             {
                 MessageBox.Show("Database cannot be initialized. " +
@@ -34,7 +37,8 @@ namespace myplayer
                     MessageBoxIcon.Error);
                 this.Close();
             }
-            FolderProcessing.FoldersToAdd.Enqueue("C:\\Users\\student\\Music");
+            FolderProcessing.FoldersToAdd.Enqueue("F:\\netbook\\mydocs\\My Music");
+            FolderProcessing.Init(dirpath + "\\" + filename);
             Thread processThread = new Thread(FolderProcessing.ProcessAll);
             processThread.IsBackground = true;
             processThread.Start(dirpath + "\\" + filename);
