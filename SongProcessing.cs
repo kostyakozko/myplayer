@@ -75,7 +75,7 @@ namespace myplayer
             /*Audio a = null;*/
             try
             {
-		if (Path.GetExtension (filepath) != "mp3" ||
+		if (Path.GetExtension (filepath) != "mp3" &&
 		    Path.GetExtension (filepath) != "wav")
 		{
 		    return false;
