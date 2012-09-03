@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using Shell32;
-using Microsoft.DirectX.AudioVideoPlayback;
+//using Microsoft.DirectX.AudioVideoPlayback;
 using System.Threading;
 
 namespace myplayer
@@ -72,23 +72,25 @@ namespace myplayer
 
         public static bool ProcessSong(string filepath, string rootdir)
         {
-            Audio a = null;
-            player.URL = filepath;
-            player.Ctlcontrols.play();
-            player.Ctlcontrols.stop();
+            /*Audio a = null;*/
             try
             {
+		if (Path.GetExtension (filepath) != "mp3" ||
+		    Path.GetExtension (filepath) != "wav")
+		{
+		    return false;
+		}
                 SongDbItems song = GetSongInfo(filepath);
                 if (String.IsNullOrEmpty(song.path))
                 {
                     return false;
                 }
-                a = new Audio(filepath);
+                /*a = new Audio(filepath);
                 if (a.Duration == 0.0)
                 {
                     a.Dispose();
                     return false;
-                }
+                }*/
                 SongQueue.queueMutex.WaitOne();
                 song.rootdir = rootdir;
                 if (song.rootdir.Contains("'"))
@@ -97,16 +99,16 @@ namespace myplayer
                 }
                 SongQueue.items.Enqueue(song);
                 SongQueue.queueMutex.ReleaseMutex();
-                a.Dispose();
+                //a.Dispose();
             }
             catch
             {
                 try
                 {
-                    if (a != null)
-                    {
+                    /*if (a != null)
+                    /{
                         a.Dispose();
-                    }
+                    }*/
                     SongQueue.queueMutex.ReleaseMutex();
                 }
                 catch
