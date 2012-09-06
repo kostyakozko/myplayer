@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,14 +37,20 @@ namespace myplayer
             return filesList;
         }
 
-        private static void AddFolderToDB(object folder_param)
-        {
-            string folderPath = ((folder_params)folder_param).folderpath;
-            string dbfilepath = ((folder_params)folder_param).filepath;
+	private static SqlCeConnection CreateConnection (string dbfilepath)
+	{
             string password = "";
             string connectionString = String.Format("DataSource=\"{0}\"; Password='{1}'",
                     dbfilepath, password);
-            using (SqlCeConnection con = new SqlCeConnection(connectionString))
+            SqlCeConection con = new SqlCeConnection(connectionString);
+	    return con;
+
+	}
+
+        private static void AddFolderToDB(object folder_param)
+        {
+            string folderPath = ((folder_params)folder_param).folderpath;
+	    using (SqlCeConnection con = CreateConnection(((folder_params)folder_param).filepath))
             {
                 con.Open();
                 string sql = "SELECT Count(*) FROM Folders WHERE name='" +
@@ -92,10 +98,7 @@ namespace myplayer
 
         public static void DeleteFolderFromDB(string folderPath, string dbfilepath)
         {
-            string password = "";
-            string connectionString = String.Format("DataSource=\"{0}\"; Password='{1}'",
-                    dbfilepath, password);
-            using (SqlCeConnection con = new SqlCeConnection(connectionString))
+            using (SqlCeConnection con = CreateConnection(dbfilepath))
             {
                 con.Open();
                 SqlCeDataAdapter da = new SqlCeDataAdapter("Select * FROM Folders", con);
@@ -136,11 +139,8 @@ namespace myplayer
 
         public static List<SongDbItems> GetFilesFromDB(string dbfilepath)
         {
-            string password = "";
-            string connectionString = String.Format("DataSource=\"{0}\"; Password='{1}'",
-                    dbfilepath, password);
             List<SongDbItems> dblist = new List<SongDbItems>();
-            using (SqlCeConnection con = new SqlCeConnection(connectionString))
+            using (SqlCeConnection con = CreateConnection(dbfilepath))
             {
                 con.Open();
                 SqlCeDataAdapter da = new SqlCeDataAdapter(
@@ -173,10 +173,10 @@ namespace myplayer
                     SongDbItems item = new SongDbItems();
                     item.id = (int) dr["id"];
                     item.name = dr["name"].ToString();
-                    //item.rootdir
-                    //item.artist
-                    //item.album
-                    //item.year
+                    item.rootdir = dr["rootdir"].ToString();
+                    item.artist = dr["artist"].ToString();
+                    item.album = dr["album"].ToString();
+                    item.year = (int)dr["year"];
                     item.path = dr["path"].ToString();
                     dblist.Add(item);
                 }
@@ -187,10 +187,7 @@ namespace myplayer
 
         private static void GetFoldersFromDB(string dbfilepath)
         {
-            string password = "";
-            string connectionString = String.Format("DataSource=\"{0}\"; Password='{1}'",
-                    dbfilepath, password);
-            using (SqlCeConnection con = new SqlCeConnection(connectionString))
+            using (SqlCeConnection con = CreateConnection(dbfilepath))
             {
                 con.Open();
                 SqlCeDataAdapter da = new SqlCeDataAdapter("Select * FROM Folders", con);
@@ -209,7 +206,6 @@ namespace myplayer
 
         private static void UpdateSongInfoOnWork(object filepath)
         {
-            string dbfilepath = Convert.ToString(filepath);
             int sleeptime = 1;
             while (true)
             {
@@ -220,10 +216,7 @@ namespace myplayer
                     if (SongQueue.items.Count > 0)
                     {
                         song = SongQueue.items.Dequeue();
-                        string password = "";
-                        string connectionString = String.Format("DataSource=\"{0}\"; Password='{1}'",
-                            dbfilepath, password);
-                        using (SqlCeConnection con = new SqlCeConnection(connectionString))
+                        using (SqlCeConnection con = CreateConnection(Convert.ToString(filepath)))
                         {
                             con.Open();
                             string filedir = Path.GetDirectoryName(song.path);
@@ -364,7 +357,6 @@ namespace myplayer
                 Thread.Sleep(sleeptime);
                 if (SongQueue.items.Count == 0)
                 {
-                    //MessageBox.Show("Nothing to do", sleeptime.ToString());
                     sleeptime = Math.Min(10000, sleeptime * 2);
                 }
                 else
@@ -376,18 +368,14 @@ namespace myplayer
 
         private static void UpdateSongListOnWork(object filepath)
         {
-            string dbfilepath = Convert.ToString(filepath);
             int sleeptime = 1;
-            string password = "";
-            string connectionString = String.Format("DataSource=\"{0}\"; Password='{1}'",
-                    dbfilepath, password);
             while (true)
             {
-                GetFoldersFromDB(dbfilepath);
+                GetFoldersFromDB(Convert.ToString(filepath));
                 foreach (string folder in folderList)
                 {
                     List<string> filelist = GetFolderFiles(folder);
-                    using (SqlCeConnection con = new SqlCeConnection(connectionString))
+                    using (SqlCeConnection con = CreateConnection(Convert.ToString(filepath)))
                     {
                         con.Open();
                         List<string> dblist = new List<string>();
