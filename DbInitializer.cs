@@ -6,15 +6,15 @@ using System.Data.SqlServerCe;
 using System.Windows.Forms;
 using System.IO;
 
-namespace myplayer
+namespace MyPlayer
 {
-    public static class DbInitializer
+    public static class DBInitializer
     {
-        static public bool InitDb(string directory, string filename)
+        static public bool InitDB(string directory, string fileName)
         {
             try
             {
-                string filepath = String.Format("{0}\\{1}", directory, filename);
+                string filepath = String.Format("{0}\\{1}", directory, fileName);
                 if (!File.Exists(filepath))
                 {
                     string connectionString;
@@ -25,8 +25,10 @@ namespace myplayer
                     {
                         Directory.CreateDirectory(directory);
                     }
-                    SqlCeEngine en = new SqlCeEngine(connectionString);
-                    en.CreateDatabase();
+                    using (SqlCeEngine en = new SqlCeEngine(connectionString))
+                    {
+                        en.CreateDatabase();
+                    }
                 }
                 return true;
             }
@@ -36,13 +38,13 @@ namespace myplayer
             }
         }
 
-        static public bool InitTables(string directory, string filename)
+        static public bool InitTables(string directory, string fileName)
         {
             try
             {
                 string connectionString;
                 string password = "";
-                string filepath = String.Format("{0}\\{1}", directory, filename);
+                string filepath = String.Format("{0}\\{1}", directory, fileName);
                 connectionString = String.Format("DataSource=\"{0}\"; Password='{1}'",
                     filepath, password);
                 using (SqlCeConnection con = new SqlCeConnection(connectionString))
@@ -121,9 +123,9 @@ namespace myplayer
                 }
                 return true;
             }
-            catch (Exception e)
+            catch 
             {
-                MessageBox.Show(e.Message);
+                
                 return false;
             }
         }

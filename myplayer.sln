@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myplayer", "myplayer.csproj", "{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C494708-AD22-46C5-B8BC-77398732D27E}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 2
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://kostya-pc:8080/tfs/defaultcollection
+		SccTeamFoundationServer = http://kostya-pc:8080/tfs/myplayer
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = myplayer.csproj
 		SccLocalPath1 = .

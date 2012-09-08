@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Threading;
 
-namespace myplayer
+namespace MyPlayer
 {
     public static class SongQueue
     {

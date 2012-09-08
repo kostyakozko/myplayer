@@ -8,7 +8,7 @@ using Shell32;
 //using Microsoft.DirectX.AudioVideoPlayback;
 using System.Threading;
 
-namespace myplayer
+namespace MyPlayer
 {
     public struct SongDbItems
     {
@@ -100,7 +100,7 @@ namespace myplayer
             return true;
         }
 
-        public static bool SetSongName(string filepath, string songname)
+        public static bool SetSongParams(string filepath, SongDbItems parameters)
         {
             try
             {
@@ -109,91 +109,11 @@ namespace myplayer
                 {
                     return false;
                 }
-                song.name = songname.Replace("'", ".");
-                SongQueue.queueMutex.WaitOne();
-                SongQueue.items.Enqueue(song);
-                SongQueue.queueMutex.ReleaseMutex();
-            }
-            catch
-            {
-                try
-                {
-                    SongQueue.queueMutex.ReleaseMutex();
-                }
-                catch
-                {
-                }
-                return false;
-            }
-            return true;
-        }
-
-        public static bool SetSongAlbum(string filepath, string albumname)
-        {
-            try
-            {
-                SongDbItems song = GetSongInfo(filepath);
-                if (String.IsNullOrEmpty(song.path))
-                {
-                    return false;
-                }
-                song.album = albumname.Replace("'", ".");
-                SongQueue.queueMutex.WaitOne();
-                SongQueue.items.Enqueue(song);
-                SongQueue.queueMutex.ReleaseMutex();
-            }
-            catch
-            {
-                try
-                {
-                    SongQueue.queueMutex.ReleaseMutex();
-                }
-                catch
-                {
-                }
-                return false;
-            }
-            return true;
-        }
-
-        public static bool SetSongYear(string filepath, int year)
-        {
-            try
-            {
-                SongDbItems song = GetSongInfo(filepath);
-                if (String.IsNullOrEmpty(song.path))
-                {
-                    return false;
-                }
-                song.year = year;
-                SongQueue.queueMutex.WaitOne();
-                SongQueue.items.Enqueue(song);
-                SongQueue.queueMutex.ReleaseMutex();
-            }
-            catch
-            {
-                try
-                {
-                    SongQueue.queueMutex.ReleaseMutex();
-                }
-                catch
-                {
-                }
-                return false;
-            }
-            return true;
-        }
-
-        public static bool SetSongArtist(string filepath, string artistname)
-        {
-            try
-            {
-                SongDbItems song = GetSongInfo(filepath);
-                if (String.IsNullOrEmpty(song.path))
-                {
-                    return false;
-                }
-                song.artist = artistname.Replace("'", ".");
+                song.name = parameters.name.Replace("'", ".");
+                song.album = parameters.album.Replace("'", ".");
+                song.artist = parameters.artist.Replace("'", ".");
+                song.year = parameters.year;
+                song.rootdir = parameters.rootdir;
                 SongQueue.queueMutex.WaitOne();
                 SongQueue.items.Enqueue(song);
                 SongQueue.queueMutex.ReleaseMutex();

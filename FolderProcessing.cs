@@ -8,7 +8,7 @@ using System.Data.SqlServerCe;
 using System.Data;
 using System.Threading;
 
-namespace myplayer
+namespace MyPlayer
 {
 	public static class FolderProcessing
 	{
@@ -87,9 +87,9 @@ namespace myplayer
 			}
 		}
 
-		public static void DeleteFolderFromDB(string folderPath, string dbfilepath)
+		public static void DeleteFolderFromDB(string folderPath, string dbFilePath)
 		{
-			using (SqlCeConnection con = CreateConnection(dbfilepath))
+			using (SqlCeConnection con = CreateConnection(dbFilePath))
 			{
 				con.Open();
 				SqlCeDataAdapter da = new SqlCeDataAdapter("Select * FROM Folders", con);
@@ -123,26 +123,29 @@ namespace myplayer
 			}
 		}
 
-		public static List<SongDbItems> GetFilesFromDB(string dbfilepath)
+		public static List<SongDbItems> GetFilesFromDB(string dbFilePath, string filter)
 		{
 			List<SongDbItems> dblist = new List<SongDbItems>();
-			using (SqlCeConnection con = CreateConnection(dbfilepath))
+			using (SqlCeConnection con = CreateConnection(dbFilePath))
 			{
 				con.Open();
-				SqlCeDataAdapter da = new SqlCeDataAdapter(
-					"Select Songs.id, " +
-					"Songs.name, Folders.name " +
-					"AS rootdir, " +
-					"Artists.name AS artist," +
-					"Albums.name AS album," +
-					"Year.year AS year," +
-					"Songs.path" +
-					"FROM Songs " +
-					"INNER JOIN Folders ON Folders.id = Songs.folder_id" +
-					"INNER JOIN Artists ON Artists.id = Songs.artist_id" +
-					"INNER JOIN Albums ON Albums.id = Songs.album_id" +
-					"INNER JOIN Year ON Year.id = Songs.year_id" +
-					"ORDER BY Songs.Name", con);
+                SqlCeDataAdapter da = new SqlCeDataAdapter(
+                    "Select Songs.id, " +
+                    "Songs.name, Folders.name " +
+                    "AS rootdir, " +
+                    "Artists.name AS artist, " +
+                    "Albums.name AS album, " +
+                    "Year.year AS year, " +
+                    "Songs.path " +
+                    "FROM Songs " +
+                    "INNER JOIN Folders ON Folders.id = Songs.folder_id " +
+                    "INNER JOIN Artists ON Artists.id = Songs.artist_id " +
+                    "INNER JOIN Albums ON Albums.id = Songs.album_id " +
+                    "INNER JOIN Year ON Year.id = Songs.year_id " +
+                    "WHERE Songs.name LIKE '%" + filter + "%'" +
+                    "OR Artists.name LIKE '%" + filter + "%'" +
+                    "OR Albums.name LIKE '%" + filter + "%'" +
+                    "ORDER BY Songs.Name", con);
 				DataSet ds = new DataSet("Song");
 				DataTable dt = new DataTable("Songs");
 				dt.Columns.Add(new DataColumn("id", typeof(int)));
@@ -150,7 +153,7 @@ namespace myplayer
 				dt.Columns.Add(new DataColumn("rootdir", typeof(string)));
 				dt.Columns.Add(new DataColumn("artist", typeof(string)));
 				dt.Columns.Add(new DataColumn("album", typeof(string)));
-				dt.Columns.Add(new DataColumn("year", typeof(string)));
+				dt.Columns.Add(new DataColumn("year", typeof(int)));
 				dt.Columns.Add(new DataColumn("path", typeof(string)));
 				ds.Tables.Add(dt);
 				da.Fill(ds, "Songs");
@@ -162,7 +165,14 @@ namespace myplayer
 					item.rootdir = dr["rootdir"].ToString();
 					item.artist = dr["artist"].ToString();
 					item.album = dr["album"].ToString();
-					item.year = (int)dr["year"];
+					if (dr["year"] != null)
+					{
+						item.year = (int)dr["year"];
+					}
+					else
+					{
+						item.year = 0;
+					}
 					item.path = dr["path"].ToString();
 					dblist.Add(item);
 				}
@@ -213,15 +223,7 @@ namespace myplayer
 							int folder_id = Convert.ToInt32(com.ExecuteScalar());
 							if (folder_id == 0)
 							{
-								sql = "INSERT INTO Folders (name) values(@Name);";
-								SqlCeCommand cmd = new SqlCeCommand(sql, con);
-								cmd.Parameters.Add("@Name", SqlDbType.NVarChar);
-								cmd.Parameters["@Name"].Value = song.rootdir;
-								cmd.ExecuteScalar();
-								sql = "SELECT id FROM Folders WHERE name='" +
-								song.rootdir + "'";
-								folder_id = Convert.ToInt32(com.ExecuteScalar());
-
+                                return;
 							}
 							if (String.IsNullOrEmpty(song.album))
 							{
@@ -306,7 +308,7 @@ namespace myplayer
 							else
 							{
 								sql = "UPDATE Songs SET name = @Name, folder_id = @Folder_id, " +
-								"artist_id = @Artist_id, album_id = @Album_id, year_id = @Year_id, path =  @Path" +
+								"artist_id = @Artist_id, album_id = @Album_id, year_id = @Year_id, path =  @Path " +
 									"WHERE id = @Song_id";
 								SqlCeCommand cmd = new SqlCeCommand(sql, con);
 								cmd.Parameters.Add("@Name", SqlDbType.NVarChar);
@@ -340,11 +342,10 @@ namespace myplayer
 
 					}
 				}
-
-				Thread.Sleep(sleeptime);
 				if (SongQueue.items.Count == 0)
 				{
-					sleeptime = Math.Min(10000, sleeptime * 2);
+					Thread.Sleep(sleeptime);
+					sleeptime = Math.Min(1000, sleeptime * 2);
 				}
 				else
 				{
@@ -426,10 +427,10 @@ namespace myplayer
 
 					}
 				}
-				Thread.Sleep(sleeptime);
 				if (SongQueue.items.Count == 0)
 				{
-					sleeptime = Math.Min(10000, sleeptime * 2);
+					Thread.Sleep(sleeptime);
+					sleeptime = Math.Min(1000, sleeptime * 2);
 				}
 				else
 				{
@@ -438,15 +439,16 @@ namespace myplayer
 			}
 		}
 
-		public static void Init(object dbfilepath)
+		public static void Init(object filepath)
 		{
-			GetFoldersFromDB(Convert.ToString(dbfilepath));
+            string dbfilepath = filepath as string;
+            GetFoldersFromDB(dbfilepath);
 			Thread songInfoUpdater = new Thread(FolderProcessing.UpdateSongInfoOnWork);
 			songInfoUpdater.IsBackground = true;
-			songInfoUpdater.Start((string)dbfilepath);
+            songInfoUpdater.Start(dbfilepath);
 			Thread songListUpdater = new Thread(FolderProcessing.UpdateSongListOnWork);
 			songListUpdater.IsBackground = true;
-			songListUpdater.Start((string)dbfilepath);
+			songListUpdater.Start(dbfilepath);
 		}
 
 		public static void ProcessAll(object dbfilepath)
@@ -455,7 +457,7 @@ namespace myplayer
 			{
 				Thread addfolder = new Thread(FolderProcessing.AddFolderToDB);
 				folder_params fp = new folder_params();
-				fp.filepath = (string)dbfilepath;
+                fp.filepath = dbfilepath as string;
 				fp.folderpath = s;
 				addfolder.IsBackground = true;
 				addfolder.Start(fp);
@@ -463,9 +465,12 @@ namespace myplayer
 			}
 		}
 
-		public static List<string> GetFolders(string dbfilepath)
+		public static List<string> GetFolders
 		{
-			return folderList;
+			get
+			{
+				return folderList;
+			}
 		}
 	}
 }
