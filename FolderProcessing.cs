@@ -395,14 +395,15 @@ namespace MyPlayer
 						{
 							if (!filelist.Contains(li.Replace("`", "'")))
 							{
-								string sql = "SELECT Folders.name FROM" +
-									"Songs INNER JOIN Folders ON Songs.folder_id = Folders_id" +
+								string sql = "SELECT Folders.name FROM " +
+									"Songs INNER JOIN Folders ON Songs.folder_id = Folders_id " +
 									"WHERE Songs.path ='" + li + "'";
 								string folder_name = "";
 								try
 								{
 									SqlCeCommand cmd = new SqlCeCommand(sql, con);
-									folder_name = Convert.ToString(cmd.ExecuteScalar());
+                                    object o = cmd.ExecuteScalar();
+									folder_name = Convert.ToString(o);
 								}
 								catch
 								{

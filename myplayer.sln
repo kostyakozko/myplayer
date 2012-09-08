@@ -8,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MySimplePlayer Setup", "..\MySimplePlayer Setup\MySimplePlayer Setup.vdproj", "{25B478A5-BDA9-4CB8-91EB-FCF2EC04449E}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 2
@@ -26,6 +28,8 @@ Global
 		{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}.Debug|x86.Build.0 = Debug|x86
 		{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}.Release|x86.ActiveCfg = Release|x86
 		{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}.Release|x86.Build.0 = Release|x86
+		{25B478A5-BDA9-4CB8-91EB-FCF2EC04449E}.Debug|x86.ActiveCfg = Debug
+		{25B478A5-BDA9-4CB8-91EB-FCF2EC04449E}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

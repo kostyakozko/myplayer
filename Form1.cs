@@ -394,11 +394,13 @@ namespace MyPlayer
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(textBox1.Text) && 
-                listBox1.Items.Count == 1 || listBox1.Items[1] != "Результаты поиска")
+            if (!String.IsNullOrEmpty(textBox1.Text))
             {
-                listBox1.Items.Insert(1, "Результаты поиска");
-                listBox1.SelectedIndex = 1;
+                if (listBox1.Items.Count == 1 || listBox1.Items[1] != "Результаты поиска")
+                {
+                    listBox1.Items.Insert(1, "Результаты поиска");
+                    listBox1.SelectedIndex = 1;
+                }
             }
             filter = textBox1.Text;
         }
