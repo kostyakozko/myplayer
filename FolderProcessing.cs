@@ -23,17 +23,18 @@ namespace MyPlayer
 		private static List<string> GetFolderFiles(string folderPath)
 		{
 			List<string> filesList = new List<string>();
-			foreach (string s in Directory.GetFiles(folderPath))
-			{
-				filesList.Add(s);
-			}
-			foreach (string s in Directory.GetDirectories(folderPath))
-			{
-				foreach (string filename in GetFolderFiles(s))
-				{
-					filesList.Add(filename);
-				}
-			}
+            try
+            {
+                filesList.AddRange(Directory.GetFiles(folderPath, "*.mp3"));
+                filesList.AddRange(Directory.GetFiles(folderPath, "*.wav"));
+                foreach (string s in Directory.GetDirectories(folderPath))
+                {
+                    filesList.AddRange(GetFolderFiles(s));
+                }
+            }
+            catch
+            {
+            }
 			return filesList;
 		}
 

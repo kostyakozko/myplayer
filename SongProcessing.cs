@@ -71,11 +71,6 @@ namespace MyPlayer
         {
             try
             {
-                if (Path.GetExtension(filepath) != ".mp3" &&
-                    Path.GetExtension(filepath) != ".wav")
-                {
-                    return false;
-                }
                 SongDbItems song = GetSongInfo(filepath);
                 SongQueue.queueMutex.WaitOne();
                 song.rootdir = rootdir;
