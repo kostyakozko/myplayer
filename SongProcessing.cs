@@ -13,6 +13,54 @@ namespace MyPlayer
         public int year;
         public string path;
         public string rootdir;
+        
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        public string Rootdir
+        {
+            get { return rootdir; }
+            set { rootdir = value; }
+        }
+        public string Artist
+        {
+            get { return artist; }
+            set { artist = value; }
+        }
+        public string Album
+        {
+            get { return album; }
+            set { album = value; }
+        }
+        public int Year 
+        {
+            get { return year; }
+            set { year = value; }
+        }
+        public string Path
+        {
+            get { return path; }
+            set { path = value; }
+        }
+
+        public SongDbItems (int id, string name, string rootdir, string artist, string album,
+                int year, string path)
+        {
+            this.id = id;
+            this.name = name;
+            this.rootdir = rootdir;
+            this.artist = artist;
+            this.album = album;
+            this.year = year;
+            this.path = path;
+        }
     };
     public static class SongProcessing
     {
