@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using MyPlayer;
 using System.Windows.Threading;
 using System.ComponentModel;
+using System.Threading;
 
 namespace myplayer
 {
@@ -25,13 +26,16 @@ namespace myplayer
         public List<string> cases { get; set; }
 
         public List<SongDbItems> music;
-        
+
         private string dirpath;
         private string filename;
+        private string filter = "";
         private string pathWithEnv;
         private DispatcherTimer timer1;
+        private DispatcherTimer timer2;
         private string sortString = "Name";
         private string sortOrder = "ASC";
+        private string statusText = "Песен: 0";
         GridViewColumnHeader _lastHeaderClicked = null;
         ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
@@ -59,12 +63,62 @@ namespace myplayer
             timer1.Tick += new EventHandler(timer1_Tick);
             timer1.Interval = new TimeSpan(0, 0, 1);
             timer1.Start();
+            timer2 = new DispatcherTimer();
+            timer2.Tick += new EventHandler(timer2_Tick);
+            timer2.Interval = new TimeSpan(0, 0, 0, 0, 500);
+        }
+
+        void timer2_Tick(object sender, EventArgs e)
+        {
+            if (listView1.SelectedIndex == -1)
+            {
+                label1.Content = "";
+                label2.Content = "";
+                label3.Content = "";
+                progressBar1.Value = 0;
+                progressBar1.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else if (Player.GetLength() != 0)
+            {
+                int curr = Player.GetCurrPos();
+                int length = Player.GetLength();
+                label2.Content = "";
+                label3.Content = "";
+                progressBar1.Maximum = length;
+                progressBar1.Visibility = System.Windows.Visibility.Visible;
+                int currhour = curr / 3600;
+                int currmin = (curr - (currhour * 3600)) / 60;
+                int currsec = curr - (currhour * 3600) - (currmin * 60);
+                int lenhour = length / 3600;
+                int lenmin = (length - (lenhour * 3600)) / 60;
+                int lensec = length - (lenhour * 3600) - (lenmin * 60);
+                if (currhour > 0)
+                {
+                    label2.Content += (currhour < 10 ? "0" : "") + currhour.ToString() + ":";
+                }
+                label2.Content += (currmin < 10 ? "0" : "") + currmin.ToString() + ":";
+                label2.Content += (currsec < 10 ? "0" : "") + currsec.ToString();
+                if (lenhour > 0)
+                {
+                    label3.Content += (lenhour < 10 ? "0" : "") + lenhour.ToString() + ":";
+                }
+                label3.Content += (lenmin < 10 ? "0" : "") + lenmin.ToString() + ":";
+                label3.Content += (lensec < 10 ? "0" : "") + lensec.ToString();
+                progressBar1.Value = curr* progressBar1.Maximum / length;
+            }
+            if (Player.IsEnded() == true)
+            {
+                Forward_Click(sender, new RoutedEventArgs());
+            }
+
         }
 
         void timer1_Tick(object sender, EventArgs e)
         {
-            music = FolderProcessing.GetFilesFromDB(dirpath + "\\" + filename, "", sortString, sortOrder);
+            music = FolderProcessing.GetFilesFromDB(dirpath + "\\" + filename, filter, sortString, sortOrder);
             listView1.ItemsSource = music;
+            statusText = "Песен: " + music.Count;
+            statusBarText.Text = statusText;
         }
 
         public MainWindow()
@@ -144,6 +198,179 @@ namespace myplayer
                     _lastDirection = direction;
                     timer1_Tick(sender, e);
                 }
+            }
+        }
+
+        private void listBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listBox1.SelectedIndex == 0)
+            {
+                cases.Remove("Результаты поиска");
+                filter = "";
+                textBox1.Text = "";
+                listBox1.ItemsSource = null;
+                listBox1.ItemsSource = cases;
+            }
+            listBox1.Focus();
+        }
+
+        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(textBox1.Text))
+            {
+                if (cases.Count == 1 || cases[1] != "Результаты поиска")
+                {
+                    cases.Insert(1, "Результаты поиска");
+                    listBox1.SelectedIndex = 1;
+                }
+                filter = textBox1.Text;
+                listBox1.ItemsSource = null;
+                listBox1.ItemsSource = cases;
+            }
+        }
+
+        private void AboutClick(object sender, RoutedEventArgs e)
+        {
+            AboutWindow window = new AboutWindow();
+            window.ShowDialog();
+        }
+
+        private void AddFolderClick(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog fd = new System.Windows.Forms.FolderBrowserDialog();
+            fd.ShowNewFolderButton = false;
+            if (fd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                FolderProcessing.FoldersToAdd.Enqueue(fd.SelectedPath);
+                Thread processThread = new Thread(FolderProcessing.ProcessAll);
+                processThread.IsBackground = true;
+                processThread.Start(dirpath + "\\" + filename);
+            }
+        }
+
+        private void DeleteFolderClick(object sender, RoutedEventArgs e)
+        {
+            DeleteWindow dw = new DeleteWindow();
+            Nullable<bool> dialogResult = dw.ShowDialog();
+            if (dialogResult == true && dw.listBox1.SelectedItems.Count > 0)
+            {
+                FolderProcessing.DeleteFolderFromDB(Convert.ToString(dw.listBox1.SelectedItems[0]),
+                    dirpath + "\\" + filename);
+            }
+        }
+
+        private void Backward_Click(object sender, RoutedEventArgs e)
+        {
+            if (music.Count == 0)
+            {
+                return;
+            }
+            if (listView1.SelectedItems.Count > 0)
+            {
+                if (listView1.SelectedIndex > 0)
+                {
+                    listView1.SelectedIndex = listView1.SelectedIndex - 1;
+                }
+                else
+                {
+                    listView1.SelectedIndex = -1;
+                    Pause_Click(sender, e);
+                    return;
+                }
+            }
+            else
+            {
+                listView1.SelectedIndex = 0;
+            }
+            listView1.Focus();
+            Play_Click(sender, e);
+            //Player.Play(music[listView1.SelectedIndex].Path);
+        }
+
+        private void Play_Click(object sender, RoutedEventArgs e)
+        {
+            if (music.Count == 0)
+            {
+                return;
+            }
+            Play.Visibility = System.Windows.Visibility.Hidden;
+            Play.IsEnabled = false;
+            Pause.Visibility = System.Windows.Visibility.Visible;
+            Pause.IsEnabled = true;
+            if (listView1.SelectedIndex == -1)
+            {
+                listView1.SelectedIndex = 0;
+            }
+            label1.Content = music[listView1.SelectedIndex].Name + " - " + music[listView1.SelectedIndex].Artist;
+            listView1.Focus();
+            Player.Play(music[listView1.SelectedIndex].Path);
+            timer2.Start();
+        }
+
+        private void Pause_Click(object sender, RoutedEventArgs e)
+        {
+            Pause.Visibility = System.Windows.Visibility.Hidden;
+            Pause.IsEnabled = false;
+            Play.Visibility = System.Windows.Visibility.Visible;
+            Play.IsEnabled = true;
+            Player.Pause();
+            if (listView1.SelectedIndex == -1)
+            {
+                Player.Stop();
+            }
+            timer2.Stop();
+        }
+
+        private void Forward_Click(object sender, RoutedEventArgs e)
+        {
+            if (music.Count == 0)
+            {
+                return;
+            }
+            if (listView1.SelectedItems.Count > 0)
+            {
+                if (listView1.SelectedIndex < listView1.Items.Count - 1)
+                {
+                    listView1.SelectedIndex = listView1.SelectedIndex + 1;
+                }
+                else
+                {
+                    listView1.SelectedIndex = -1;
+                    Pause_Click(sender, e);
+                    return;
+                }
+            }
+            else
+            {
+                listView1.SelectedIndex = 0;
+            }
+            listView1.Focus();
+            Play_Click(sender, e);
+        }
+
+        private void listView1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Play_Click(sender, e);
+        }
+
+        private void progressBar1_MouseMove(object sender, MouseEventArgs e)
+        {
+            System.Windows.Point position = e.GetPosition(progressBar1);
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                int a = (int)(position.X * progressBar1.Maximum / progressBar1.ActualWidth);
+                Player.SeekPos(a);
+            }
+
+        }
+
+        private void progressBar1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Point position = e.GetPosition(progressBar1);
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                int a = (int)(position.X * progressBar1.Maximum / progressBar1.ActualWidth);
+                Player.SeekPos(a);
             }
         }
     }

@@ -4,8 +4,50 @@
         xmlns:tools="clr-namespace:MyPlayer"
         xmlns:s="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:p="clr-namespace:System;assembly=mscorlib"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="625" WindowState="Maximized">
     <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border  
+        x:Name="Border"   
+        CornerRadius="2"  
+        BorderThickness="1" 
+        Background="Transparent" 
+        BorderBrush="Transparent">
+                            <ContentPresenter  
+          Margin="2" 
+          HorizontalAlignment="Center" 
+          VerticalAlignment="Center" 
+          RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Foreground" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <DataTemplate x:Key="HeaderTemplateArrowUp">
             <DockPanel>
                 <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
@@ -81,7 +123,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="23" />
-            <RowDefinition Height="32" />
+            <RowDefinition Height="48" />
             <RowDefinition Height="*" />
             <RowDefinition Height="23" />
         </Grid.RowDefinitions>
@@ -91,30 +133,33 @@
               Grid.Row="0"
               Grid.ColumnSpan="2">
             <MenuItem Header="Файл">
-                <MenuItem Header="Добавить папку..." />
-                <MenuItem Header="Удалить папку..." />
+                <MenuItem Header="Добавить папку..." Click="AddFolderClick" />
+                <MenuItem Header="Удалить папку..." Click="DeleteFolderClick"/>
                 <MenuItem Header="Создать плейлист" />
                 <MenuItem Header="Выход" />
             </MenuItem>
             <MenuItem Header="Справка">
-                <MenuItem Header="О программе" />
+                <MenuItem Header="О программе" Click="AboutClick" />
             </MenuItem>
         </Menu>
-        
+
         <StatusBar Grid.ColumnSpan="2" 
                    Grid.Row="3" 
                    Grid.Column="0"
                    Height="23" 
-                   Name="statusBar1" />
+                   Name="statusBar1">
+            <TextBlock Name="statusBarText"/>
+        </StatusBar>
         <ListBox Grid.Row="2" 
                  Grid.Column="0"
                  Name="listBox1" 
                  ItemsSource="{Binding}"
-                 DataContext="{Binding cases,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}"/>
+                 DataContext="{Binding cases,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}" 
+                 SelectionChanged="listBox1_SelectionChanged"  Focusable="True" />
         <ListView Grid.Column="1" 
                   Grid.Row="2" 
                   Name="listView1" ItemsSource="{Binding}" Foreground="Black"
-                  GridViewColumnHeader.Click="Header_Click">
+                  GridViewColumnHeader.Click="Header_Click" MouseDoubleClick="listView1_MouseDoubleClick">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ID" Width="0" CellTemplate="{DynamicResource IdParser}" />
@@ -133,22 +178,62 @@
               Name="grid1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="32" />
-                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="48" />
                 <ColumnDefinition Width="32" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="120" />
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Source="images\backwardButton.png" Name="Backward"/>
-            <Image Grid.Column="1" Source="images\playButton.png" Name="Play"/>
-            <Image Grid.Column="1" Source="images\pauseButton.png" Visibility="Hidden" Name="Pause"/>
-            <Image Grid.Column="2" Source="images\forwardButton.png" Name="Forward" />
-            <Label Content="" Grid.Column="3" Height="28" HorizontalAlignment="Center"
-                   Name="label1" VerticalAlignment="Center" />
-            <TextBox Grid.Column="4" Grid.Row="0" Height="23" VerticalAlignment="Center">
+            <Button Grid.Column="0" Background="Transparent" BorderBrush="Transparent"
+                    Name="Backward" Click="Backward_Click" Focusable="False">
+                <Image Source="images\backwardButton.png" />
+            </Button>
+            <Button Grid.Column="1" Background="Transparent" BorderBrush="Transparent"
+                    IsEnabled="True" Padding="0"
+                    Name="Play" Click="Play_Click" Focusable="False">
+                <Image Source="images\playButton.png" />
+            </Button>
+            <Button Grid.Column="1" Background="Transparent" BorderBrush="Transparent"
+                    IsEnabled="False" Padding="0" Visibility="Hidden"
+                    Name="Pause" Click="Pause_Click" Focusable="False">
+                <Image Grid.Column="1" Source="images\pauseButton.png"/>
+            </Button>
+            <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent"
+                    Name="Forward" Click="Forward_Click" Focusable="False">
+                <Image Source="images\forwardButton.png" />
+            </Button>
+            <Grid Grid.Column="3" Name="LabelGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Content="" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                   Name="label1" />
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" MinWidth="150" MaxWidth="300"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Name="label2" />
+                    <ProgressBar Grid.Column="1" Name="progressBar1" Height="15" Visibility="Hidden" MouseMove="progressBar1_MouseMove" MouseDown="progressBar1_MouseDown">
+                        <ProgressBar.Margin>
+                            <Thickness Left="10" Right="10" />
+                        </ProgressBar.Margin>
+                    </ProgressBar>
+                    <Label Content="" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Name="label3" />
+                </Grid>
+            </Grid>
+            <TextBox Grid.Column="4" Grid.Row="0" Height="23" VerticalAlignment="Center"
+                     Name="textBox1" TextChanged="textBox1_TextChanged">
                 <TextBox.Margin>
                     <Thickness Right="10" />
                 </TextBox.Margin>
             </TextBox>
-        </Grid>       
+        </Grid>
     </Grid>
 </Window>
