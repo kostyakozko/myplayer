@@ -121,9 +121,30 @@ namespace MyPlayer
 			}
 		}
 
-		public static List<SongDbItems> GetFilesFromDB(string dbFilePath, string filter)
+		public static List<SongDbItems> GetFilesFromDB(string dbFilePath, string filter="", string order="Name",
+            string orderType = "ASC")
 		{
 			List<SongDbItems> dblist = new List<SongDbItems>();
+            string OrderStr = "Songs.Name";
+            switch(order)
+            {
+                case "Name":
+                case "name":
+                    OrderStr = "Songs.name";
+                    break;
+                case "Artist":
+                case "artist":
+                    OrderStr = "Artists.name";
+                    break;
+                case "Album":
+                case "album":
+                    OrderStr = "Albums.name";
+                    break;
+                case "Year":
+                case "year":
+                    OrderStr = "Year.year";
+                    break;
+            }
 			using (SqlCeConnection con = CreateConnection(dbFilePath))
 			{
 				con.Open();
@@ -143,7 +164,7 @@ namespace MyPlayer
                     "WHERE Songs.name LIKE '%" + filter + "%'" +
                     "OR Artists.name LIKE '%" + filter + "%'" +
                     "OR Albums.name LIKE '%" + filter + "%'" +
-                    "ORDER BY Songs.Name", con);
+                    "ORDER BY " + OrderStr + " " + orderType, con);
 				DataSet ds = new DataSet("Song");
 				DataTable dt = new DataTable("Songs");
 				dt.Columns.Add(new DataColumn("id", typeof(int)));
