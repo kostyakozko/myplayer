@@ -15,6 +15,7 @@ using MyPlayer;
 using System.Windows.Threading;
 using System.ComponentModel;
 using System.Threading;
+using System.Collections.ObjectModel;
 
 namespace myplayer
 {
@@ -23,9 +24,9 @@ namespace myplayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        public List<string> cases { get; set; }
+        public ObservableCollection<string> Cases { get; set; }
 
-        public List<SongDbItems> music;
+        public ObservableCollection<SongDbItems> Music { get; set; }
 
         private string dirpath;
         private string filename;
@@ -104,7 +105,7 @@ namespace myplayer
                 }
                 label3.Content += (lenmin < 10 ? "0" : "") + lenmin.ToString() + ":";
                 label3.Content += (lensec < 10 ? "0" : "") + lensec.ToString();
-                progressBar1.Value = curr* progressBar1.Maximum / length;
+                progressBar1.Value = curr * progressBar1.Maximum / length;
             }
             if (Player.IsEnded() == true)
             {
@@ -115,19 +116,19 @@ namespace myplayer
 
         void timer1_Tick(object sender, EventArgs e)
         {
-            music = FolderProcessing.GetFilesFromDB(dirpath + "\\" + filename, filter, sortString, sortOrder);
-            listView1.ItemsSource = music;
-            statusText = "Песен: " + music.Count;
+            Music = FolderProcessing.GetObservableFromDB(dirpath + "\\" + filename, filter, sortString, sortOrder);
+            listView1.ItemsSource = Music;
+            statusText = "Песен: " + Music.Count;
             statusBarText.Text = statusText;
         }
 
         public MainWindow()
         {
             Init();
-            cases = new List<string>();
-            music = new List<SongDbItems>();
+            Cases = new ObservableCollection<string>();
+            Music = new ObservableCollection<SongDbItems>();
             InitializeComponent();
-            cases.Add("Вся музыка");
+            Cases.Add("Вся музыка");
         }
 
         private void Header_Click(object sender, RoutedEventArgs e)
@@ -205,11 +206,10 @@ namespace myplayer
         {
             if (listBox1.SelectedIndex == 0)
             {
-                cases.Remove("Результаты поиска");
+                Cases.Remove("Результаты поиска");
                 filter = "";
                 textBox1.Text = "";
-                listBox1.ItemsSource = null;
-                listBox1.ItemsSource = cases;
+
             }
             listBox1.Focus();
         }
@@ -218,14 +218,12 @@ namespace myplayer
         {
             if (!String.IsNullOrEmpty(textBox1.Text))
             {
-                if (cases.Count == 1 || cases[1] != "Результаты поиска")
+                if (Cases.Count == 1 || Cases[1] != "Результаты поиска")
                 {
-                    cases.Insert(1, "Результаты поиска");
+                    Cases.Insert(1, "Результаты поиска");
                     listBox1.SelectedIndex = 1;
                 }
                 filter = textBox1.Text;
-                listBox1.ItemsSource = null;
-                listBox1.ItemsSource = cases;
             }
         }
 
@@ -261,7 +259,7 @@ namespace myplayer
 
         private void Backward_Click(object sender, RoutedEventArgs e)
         {
-            if (music.Count == 0)
+            if (Music.Count == 0)
             {
                 return;
             }
@@ -284,12 +282,11 @@ namespace myplayer
             }
             listView1.Focus();
             Play_Click(sender, e);
-            //Player.Play(music[listView1.SelectedIndex].Path);
         }
 
         private void Play_Click(object sender, RoutedEventArgs e)
         {
-            if (music.Count == 0)
+            if (Music.Count == 0)
             {
                 return;
             }
@@ -301,9 +298,9 @@ namespace myplayer
             {
                 listView1.SelectedIndex = 0;
             }
-            label1.Content = music[listView1.SelectedIndex].Name + " - " + music[listView1.SelectedIndex].Artist;
+            label1.Content = Music[listView1.SelectedIndex].Name + " - " + Music[listView1.SelectedIndex].Artist;
             listView1.Focus();
-            Player.Play(music[listView1.SelectedIndex].Path);
+            Player.Play(Music[listView1.SelectedIndex].Path);
             timer2.Start();
         }
 
@@ -323,7 +320,7 @@ namespace myplayer
 
         private void Forward_Click(object sender, RoutedEventArgs e)
         {
-            if (music.Count == 0)
+            if (Music.Count == 0)
             {
                 return;
             }
@@ -373,5 +370,15 @@ namespace myplayer
                 Player.SeekPos(a);
             }
         }
+
+        private void OnPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

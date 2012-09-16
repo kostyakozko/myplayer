@@ -152,17 +152,19 @@
         </StatusBar>
         <ListBox Grid.Row="2" 
                  Grid.Column="0"
-                 Name="listBox1" 
-                 ItemsSource="{Binding}"
-                 DataContext="{Binding cases,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}}" 
+                 Name="listBox1"
+                 ItemsSource="{Binding}" 
+                 DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=Cases}" 
                  SelectionChanged="listBox1_SelectionChanged"  Focusable="True" />
         <ListView Grid.Column="1" 
                   Grid.Row="2" 
-                  Name="listView1" ItemsSource="{Binding}" Foreground="Black"
-                  GridViewColumnHeader.Click="Header_Click" MouseDoubleClick="listView1_MouseDoubleClick">
+                  Name="listView1" Foreground="Black"
+                  GridViewColumnHeader.Click="Header_Click" MouseDoubleClick="listView1_MouseDoubleClick"
+                  ItemsSource="{Binding}" 
+                 DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=Music}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ID" Width="0" CellTemplate="{DynamicResource IdParser}" />
+                    <GridViewColumn Header="ID" Width="0" CellTemplate="{DynamicResource IdParser}"/>
                     <GridViewColumn Header="Название" CellTemplate="{DynamicResource NameParser}"/>
                     <GridViewColumn Header="Rootdir" Width="0" CellTemplate="{DynamicResource RootDirParser}" />
                     <GridViewColumn Header="Исполнитель" CellTemplate="{DynamicResource ArtistParser}"/>
