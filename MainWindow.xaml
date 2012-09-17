@@ -6,44 +6,233 @@
         xmlns:p="clr-namespace:System;assembly=mscorlib"
         Title="MainWindow" Height="350" Width="625" WindowState="Maximized">
     <Window.Resources>
-        <Style TargetType="{x:Type Button}">
+        <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#CCC" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="HorizontalNormalBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#CCC" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#EEE" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="HorizontalLightBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#EEE" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="DarkBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#FFF" Offset="0.0"/>
+                    <GradientStop Color="#AAA" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#BBB" Offset="0.0"/>
+                    <GradientStop Color="#EEE" Offset="0.1"/>
+                    <GradientStop Color="#EEE" Offset="0.9"/>
+                    <GradientStop Color="#FFF" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+
+        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
+
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
+
+        <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
+
+        <!-- Border Brushes -->
+
+        <LinearGradientBrush x:Key="NormalBorderBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#CCC" Offset="0.0"/>
+                    <GradientStop Color="#444" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="HorizontalNormalBorderBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#CCC" Offset="0.0"/>
+                    <GradientStop Color="#444" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="DefaultedBorderBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#777" Offset="0.0"/>
+                    <GradientStop Color="#000" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#444" Offset="0.0"/>
+                    <GradientStop Color="#888" Offset="1.0"/>
+                </GradientStopCollection>
+            </GradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
+
+        <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
+
+        <SolidColorBrush x:Key="LightBorderBrush" Color="#AAA" />
+
+        <!-- Miscellaneous Brushes -->
+        <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
+
+        <SolidColorBrush x:Key="LightColorBrush" Color="#DDD" />
+
+        <Style x:Key="SliderButtonStyle" TargetType="{x:Type RepeatButton}">
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border  
-        x:Name="Border"   
-        CornerRadius="2"  
-        BorderThickness="1" 
-        Background="Transparent" 
-        BorderBrush="Transparent">
-                            <ContentPresenter  
-          Margin="2" 
-          HorizontalAlignment="Center" 
-          VerticalAlignment="Center" 
-          RecognizesAccessKey="True"/>
-                        </Border>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="Transparent" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderDecreaseButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Grid>
+                            <Rectangle RadiusX="10" RadiusY="10">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="Green">
+                                    </SolidColorBrush>
+                                </Rectangle.Fill>
+                                <Rectangle.Margin>
+                                    <Thickness Right="-10" />
+                                </Rectangle.Margin>
+                            </Rectangle>
+                        </Grid>
+                    </ControlTemplate>
+               </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Height" Value="14"/>
+            <Setter Property="Width" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Ellipse 
+          Name="Ellipse" 
+          Fill="{StaticResource NormalBrush}"
+          Stroke="{StaticResource NormalBorderBrush}"
+          StrokeThickness="1" />
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocused" Value="true">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
-                            </Trigger>
-                            <Trigger Property="IsDefaulted" Value="true">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
-                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Ellipse" Property="Fill" Value="{StaticResource DarkBrush}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
-                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
-                                <Setter Property="Foreground" Value="Transparent"/>
+                                <Setter TargetName="Ellipse" Property="Fill" Value="{StaticResource DisabledBackgroundBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Slider">
+            <Setter Property="Template">
+                <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Slider}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="14"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border 
+      Name="TrackBackground"
+      CornerRadius="10" 
+      Grid.Row="1"
+      Background="{StaticResource LightBrush}" 
+      BorderBrush="{StaticResource NormalBorderBrush}"
+      BorderThickness="1" />
+                <Track Grid.Row="1" Name="PART_Track">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton 
+          Style="{StaticResource SliderDecreaseButtonStyle}"
+          Command="Slider.DecreaseLarge" />
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource SliderThumbStyle}" />
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton 
+          Style="{StaticResource SliderButtonStyle}"
+          Command="Slider.IncreaseLarge" />
+                    </Track.IncreaseRepeatButton>
+                </Track>
+            </Grid>
+        </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>       
+
+        <Style TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid>
+                            <Rectangle Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent},Path=Height}">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="Transparent"/>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Image Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Content}" />
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -186,22 +375,19 @@
                 <ColumnDefinition Width="120" />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Background="Transparent" BorderBrush="Transparent"
-                    Name="Backward" Click="Backward_Click" Focusable="False">
-                <Image Source="images\backwardButton.png" />
+                    Name="Backward" Click="Backward_Click" Focusable="False" Content="images\backwardButton.png">
+                
             </Button>
             <Button Grid.Column="1" Background="Transparent" BorderBrush="Transparent"
                     IsEnabled="True" Padding="0"
-                    Name="Play" Click="Play_Click" Focusable="False">
-                <Image Source="images\playButton.png" />
+                    Name="Play" Click="Play_Click" Focusable="False" Content="images\playButton.png">
             </Button>
             <Button Grid.Column="1" Background="Transparent" BorderBrush="Transparent"
                     IsEnabled="False" Padding="0" Visibility="Hidden"
-                    Name="Pause" Click="Pause_Click" Focusable="False">
-                <Image Grid.Column="1" Source="images\pauseButton.png"/>
+                    Name="Pause" Click="Pause_Click" Focusable="False" Content="images\pauseButton.png">
             </Button>
             <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent"
-                    Name="Forward" Click="Forward_Click" Focusable="False">
-                <Image Source="images\forwardButton.png" />
+                    Name="Forward" Click="Forward_Click" Focusable="False" Content="images\forwardButton.png">
             </Button>
             <Grid Grid.Column="3" Name="LabelGrid">
                 <Grid.RowDefinitions>
@@ -220,11 +406,9 @@
                     <Label Content="" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Name="label2" />
-                    <ProgressBar Grid.Column="1" Name="progressBar1" Height="15" Visibility="Hidden" MouseMove="progressBar1_MouseMove" MouseDown="progressBar1_MouseDown">
-                        <ProgressBar.Margin>
-                            <Thickness Left="10" Right="10" />
-                        </ProgressBar.Margin>
-                    </ProgressBar>
+                    <Slider Grid.Column="1" Name="progressBar1" 
+                            Visibility="Visible" IsMoveToPointEnabled="True" ValueChanged="progressBar1_ValueChanged">
+                    </Slider>
                     <Label Content="" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Name="label3" />

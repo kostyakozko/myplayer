@@ -37,6 +37,7 @@ namespace myplayer
         private string sortString = "Name";
         private string sortOrder = "ASC";
         private string statusText = "Песен: 0";
+        private double progress_position = 0;
         GridViewColumnHeader _lastHeaderClicked = null;
         ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
@@ -106,6 +107,7 @@ namespace myplayer
                 label3.Content += (lenmin < 10 ? "0" : "") + lenmin.ToString() + ":";
                 label3.Content += (lensec < 10 ? "0" : "") + lensec.ToString();
                 progressBar1.Value = curr * progressBar1.Maximum / length;
+                progress_position = progressBar1.Value;
             }
             if (Player.IsEnded() == true)
             {
@@ -350,27 +352,6 @@ namespace myplayer
             Play_Click(sender, e);
         }
 
-        private void progressBar1_MouseMove(object sender, MouseEventArgs e)
-        {
-            System.Windows.Point position = e.GetPosition(progressBar1);
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                int a = (int)(position.X * progressBar1.Maximum / progressBar1.ActualWidth);
-                Player.SeekPos(a);
-            }
-
-        }
-
-        private void progressBar1_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            System.Windows.Point position = e.GetPosition(progressBar1);
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                int a = (int)(position.X * progressBar1.Maximum / progressBar1.ActualWidth);
-                Player.SeekPos(a);
-            }
-        }
-
         private void OnPropertyChanged(string name)
         {
             if (PropertyChanged != null)
@@ -380,5 +361,15 @@ namespace myplayer
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void progressBar1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (Math.Abs(progressBar1.Value - progress_position) > 1)
+            {
+                Player.SeekPos((int)progressBar1.Value);
+                progress_position = progressBar1.Value;
+            }
+        }
+
     }
 }
