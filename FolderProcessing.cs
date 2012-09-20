@@ -4,6 +4,7 @@ using System.IO;
 using System.Data.SqlServerCe;
 using System.Data;
 using System.Threading;
+using System.Collections.ObjectModel;
 
 namespace MyPlayer
 {
@@ -120,7 +121,6 @@ namespace MyPlayer
 				com.ExecuteNonQuery();
 			}
 		}
-
 		public static List<SongDbItems> GetFilesFromDB(string dbFilePath, string filter="", string order="Name",
             string orderType = "ASC")
 		{
@@ -199,6 +199,12 @@ namespace MyPlayer
 			return dblist;
 
 		}
+
+        public static ObservableCollection<SongDbItems> GetObservableFromDB(string dbFilePath, string filter = "",
+            string order = "Name", string orderType = "ASC")
+        {
+            return new ObservableCollection<SongDbItems>(GetFilesFromDB(dbFilePath, filter, order, orderType));
+        }
 
 		private static void GetFoldersFromDB(string dbfilepath)
 		{

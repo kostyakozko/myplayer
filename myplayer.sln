@@ -1,35 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myplayer", "myplayer.csproj", "{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C494708-AD22-46C5-B8BC-77398732D27E}"
-	ProjectSection(SolutionItems) = preProject
-		Performance1.psess = Performance1.psess
-	EndProjectSection
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MySimplePlayer Setup", "..\MySimplePlayer Setup\MySimplePlayer Setup.vdproj", "{25B478A5-BDA9-4CB8-91EB-FCF2EC04449E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myplayer", "myplayer.csproj", "{18465B83-79D0-4EBB-B998-B604013D0163}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://kostya-pc:8080/tfs/myplayer
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = myplayer.csproj
-		SccLocalPath1 = .
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}.Debug|x86.ActiveCfg = Debug|x86
-		{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}.Debug|x86.Build.0 = Debug|x86
-		{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}.Release|x86.ActiveCfg = Release|x86
-		{C58CA5B7-EB3F-4051-A19D-66AF160AAF73}.Release|x86.Build.0 = Release|x86
-		{25B478A5-BDA9-4CB8-91EB-FCF2EC04449E}.Debug|x86.ActiveCfg = Debug
-		{25B478A5-BDA9-4CB8-91EB-FCF2EC04449E}.Release|x86.ActiveCfg = Release
+		{18465B83-79D0-4EBB-B998-B604013D0163}.Debug|x86.ActiveCfg = Debug|x86
+		{18465B83-79D0-4EBB-B998-B604013D0163}.Debug|x86.Build.0 = Debug|x86
+		{18465B83-79D0-4EBB-B998-B604013D0163}.Release|x86.ActiveCfg = Release|x86
+		{18465B83-79D0-4EBB-B998-B604013D0163}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
