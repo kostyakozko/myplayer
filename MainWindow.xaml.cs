@@ -227,6 +227,8 @@ namespace myplayer
                 }
                 filter = textBox1.Text;
             }
+            else
+                listBox1.SelectedIndex = 0;
         }
 
         private void AboutClick(object sender, RoutedEventArgs e)

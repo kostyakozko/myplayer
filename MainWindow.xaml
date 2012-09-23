@@ -187,7 +187,7 @@
         <DataTemplate x:Key="RootDirParser" DataType="SongDbItems">
             <TextBlock>
                 <TextBlock.Text>
-                    <Binding Path="RootDir" />
+                    <Binding Path="Rootdir" />
                 </TextBlock.Text>
             </TextBlock>
         </DataTemplate>
@@ -264,8 +264,7 @@
                   Grid.Row="2" 
                   Name="listView1" Foreground="Black"
                   GridViewColumnHeader.Click="Header_Click" MouseDoubleClick="listView1_MouseDoubleClick"
-                  ItemsSource="{Binding}" 
-                 DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=Music}">
+                  ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=Music}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ID" Width="0" CellTemplate="{DynamicResource IdParser}"/>
