@@ -1,0 +1,54 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DataTemplate x:Key="IdParser" DataType="SongDbItems">
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding Path="Id" />
+            </TextBlock.Text>
+        </TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Key="NameParser" DataType="SongDbItems">
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding Path="Name" />
+            </TextBlock.Text>
+        </TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Key="RootDirParser" DataType="SongDbItems">
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding Path="Rootdir" />
+            </TextBlock.Text>
+        </TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Key="ArtistParser" DataType="SongDbItems">
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding Path="Artist" />
+            </TextBlock.Text>
+        </TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Key="AlbumParser" DataType="SongDbItems">
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding Path="Album" />
+            </TextBlock.Text>
+        </TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Key="YearParser" DataType="SongDbItems">
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding Path="Year" />
+            </TextBlock.Text>
+        </TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Key="PathParser" DataType="SongDbItems">
+        <TextBlock>
+            <TextBlock.Text>
+                <Binding Path="Path" />
+            </TextBlock.Text>
+        </TextBlock>
+    </DataTemplate>
+
+</ResourceDictionary>
