@@ -12,6 +12,19 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="TaskBarItem" 
+                         ProgressState="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=ProgressState}" 
+                         ProgressValue="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=ProgressValue}">
+            <TaskbarItemInfo.ThumbButtonInfos>
+                <ThumbButtonInfo ImageSource="images\backwardButton.png" Click="ThumbButtonInfo_BackwardClick" />
+                <ThumbButtonInfo x:Name="PlayPause"
+                    ImageSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PlayPauseButtonSource}"
+                    Click="ThumbButtonInfo_PlayClick" />
+                <ThumbButtonInfo ImageSource="images\forwardButton.png" Click="ThumbButtonInfo_ForwardClick" />
+            </TaskbarItemInfo.ThumbButtonInfos>
+        </TaskbarItemInfo>
+    </Window.TaskbarItemInfo>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="150" />
@@ -85,11 +98,15 @@
                 
             </Button>
             <Button Grid.Column="1" Style="{StaticResource PlayButton}" Background="#FF1D5BBA"
-                    IsEnabled="True" Padding="0"
+                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PlayEnabled}" 
+                    Padding="0"
+                    Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PlayVisibility}"
                     Name="Play" Click="Play_Click" Focusable="False" >
             </Button>
             <Button Grid.Column="1" Style="{StaticResource PauseButton}" Background="#FF660707"
-                    IsEnabled="False" Padding="0" Visibility="Hidden"
+                    IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PauseEnabled}" 
+                    Padding="0" 
+                    Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PauseVisibility}"
                     Name="Pause" Click="Pause_Click" Focusable="False" >
             </Button>
             <Button Grid.Column="2" Style="{StaticResource ForwardButton}" Background="#FF1D5BBA"

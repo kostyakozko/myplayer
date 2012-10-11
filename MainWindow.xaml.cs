@@ -22,13 +22,111 @@ namespace myplayer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public ObservableCollection<string> Cases { get; set; }
 
         public ObservableCollection<SongDbItems> Music { get; set; }
 
+        public double ProgressValue {
+            get 
+            {
+                return progressValue;
+            }
+            set
+            {
+                progressValue = value;
+                OnPropertyChanged("ProgressValue");
+            }
+        }
+
+        public System.Windows.Shell.TaskbarItemProgressState ProgressState
+        {
+            get
+            {
+                return progressState;
+            }
+            set
+            {
+                progressState = value;
+                OnPropertyChanged("ProgressState");
+            }
+        }
+
+        public System.Windows.Visibility PlayVisibility
+        {
+            get
+            {
+                return playVisibility;
+            }
+            set
+            {
+                playVisibility = value;
+                OnPropertyChanged("PlayVisibility");
+            }
+        }
+
+        public System.Windows.Visibility PauseVisibility
+        {
+            get
+            {
+                return pauseVisibility;
+            }
+            set
+            {
+                pauseVisibility = value;
+                OnPropertyChanged("PauseVisibility");
+            }
+        }
+
+        public bool PlayEnabled
+        {
+            get
+            {
+                return playEnabled;
+            }
+            set
+            {
+                playEnabled = value;
+                OnPropertyChanged("PlayEnabled");
+            }
+        }
+
+        public bool PauseEnabled
+        {
+            get
+            {
+                return pauseEnabled;
+            }
+            set
+            {
+                pauseEnabled = value;
+                OnPropertyChanged("PauseEnabled");
+            }
+        }
+
+        public string PlayPauseButtonSource
+        {
+            get
+            {
+                return playPauseButtonSource;
+            }
+
+            set
+            {
+                playPauseButtonSource = value;
+                OnPropertyChanged("PlayPauseButtonSource");
+            }
+        }
+
         private string dirpath;
+        private double progressValue;
+        private System.Windows.Shell.TaskbarItemProgressState progressState;
+        private System.Windows.Visibility playVisibility;
+        private System.Windows.Visibility pauseVisibility;
+        private bool playEnabled;
+        private bool pauseEnabled;
+        private string playPauseButtonSource;
         private string filename;
         private string filter = "";
         private string pathWithEnv;
@@ -79,6 +177,7 @@ namespace myplayer
                 label3.Content = "";
                 progressBar1.Value = 0;
                 progressBar1.Visibility = System.Windows.Visibility.Hidden;
+                ProgressValue = 0;
             }
             else if (Player.GetLength() != 0)
             {
@@ -108,6 +207,7 @@ namespace myplayer
                 label3.Content += (lensec < 10 ? "0" : "") + lensec.ToString();
                 progressBar1.Value = curr * progressBar1.Maximum / length;
                 progress_position = progressBar1.Value;
+                ProgressValue = (double)(progressBar1.Value / progressBar1.Maximum);
             }
             if (Player.IsEnded() == true)
             {
@@ -129,6 +229,13 @@ namespace myplayer
             Init();
             Cases = new ObservableCollection<string>();
             Music = new ObservableCollection<SongDbItems>();
+            ProgressValue = 0.0;
+            ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
+            PlayVisibility = System.Windows.Visibility.Visible;
+            PauseVisibility = System.Windows.Visibility.Hidden;
+            PlayEnabled = true;
+            PauseEnabled = false;
+            PlayPauseButtonSource = @"images\playButton.png";
             InitializeComponent();
             Cases.Add("Вся музыка");
         }
@@ -294,10 +401,14 @@ namespace myplayer
             {
                 return;
             }
-            Play.Visibility = System.Windows.Visibility.Hidden;
-            Play.IsEnabled = false;
-            Pause.Visibility = System.Windows.Visibility.Visible;
-            Pause.IsEnabled = true;
+            ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
+            PlayVisibility = System.Windows.Visibility.Hidden;
+            PauseVisibility = System.Windows.Visibility.Visible;
+            PlayEnabled = false;
+            PauseEnabled = true;
+            PlayPauseButtonSource = @"images\pauseButton.png";
+            PlayPause.Click -= ThumbButtonInfo_PlayClick;
+            PlayPause.Click += ThumbButtonInfo_PauseClick;
             if (listView1.SelectedIndex == -1)
             {
                 listView1.SelectedIndex = 0;
@@ -310,16 +421,20 @@ namespace myplayer
 
         private void Pause_Click(object sender, RoutedEventArgs e)
         {
-            Pause.Visibility = System.Windows.Visibility.Hidden;
-            Pause.IsEnabled = false;
-            Play.Visibility = System.Windows.Visibility.Visible;
-            Play.IsEnabled = true;
+            PauseVisibility = System.Windows.Visibility.Hidden;
+            PlayVisibility = System.Windows.Visibility.Visible;
+            PauseEnabled = false;
+            PlayEnabled = true;
+            PlayPauseButtonSource = @"images\playButton.png";
+            PlayPause.Click += ThumbButtonInfo_PlayClick;
+            PlayPause.Click -= ThumbButtonInfo_PauseClick;
             Player.Pause();
             if (listView1.SelectedIndex == -1)
             {
                 Player.Stop();
             }
             timer2.Stop();
+            ProgressState = System.Windows.Shell.TaskbarItemProgressState.Paused;
         }
 
         private void Forward_Click(object sender, RoutedEventArgs e)
@@ -373,5 +488,24 @@ namespace myplayer
             }
         }
 
+        private void ThumbButtonInfo_BackwardClick(object sender, EventArgs e)
+        {
+            Backward_Click(sender, new RoutedEventArgs());
+        }
+
+        private void ThumbButtonInfo_ForwardClick(object sender, EventArgs e)
+        {
+            Forward_Click(sender, new RoutedEventArgs());
+        }
+
+        private void ThumbButtonInfo_PlayClick(object sender, EventArgs e)
+        {
+            Play_Click(sender, new RoutedEventArgs());
+        }
+
+        private void ThumbButtonInfo_PauseClick(object sender, EventArgs e)
+        {
+            Pause_Click(sender, new RoutedEventArgs());
+        }
     }
 }
