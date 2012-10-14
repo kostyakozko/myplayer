@@ -121,6 +121,7 @@ namespace myplayer
 
         private string dirpath;
         private double progressValue;
+        private ObservableCollection<SongDbItems> music;
         private System.Windows.Shell.TaskbarItemProgressState progressState;
         private System.Windows.Visibility playVisibility;
         private System.Windows.Visibility pauseVisibility;
@@ -218,10 +219,14 @@ namespace myplayer
 
         void timer1_Tick(object sender, EventArgs e)
         {
-            Music = FolderProcessing.GetObservableFromDB(dirpath + "\\" + filename, filter, sortString, sortOrder);
-            listView1.ItemsSource = Music;
-            statusText = "Песен: " + Music.Count;
-            statusBarText.Text = statusText;
+            music = FolderProcessing.GetObservableFromDB(dirpath + "\\" + filename, filter, sortString, sortOrder);
+            if (music.Count != Music.Count)
+            {
+                Music = music;
+                listView1.ItemsSource = Music;
+                statusText = "Песен: " + Music.Count;
+                statusBarText.Text = statusText;
+            }
         }
 
         public MainWindow()
@@ -229,6 +234,7 @@ namespace myplayer
             Init();
             Cases = new ObservableCollection<string>();
             Music = new ObservableCollection<SongDbItems>();
+            music = new ObservableCollection<SongDbItems>();
             ProgressValue = 0.0;
             ProgressState = System.Windows.Shell.TaskbarItemProgressState.None;
             PlayVisibility = System.Windows.Visibility.Visible;
