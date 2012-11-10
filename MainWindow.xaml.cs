@@ -137,6 +137,7 @@ namespace myplayer
         private string sortOrder = "ASC";
         private string statusText = "Песен: 0";
         private double progress_position = 0;
+        private bool needToSort = false;
         GridViewColumnHeader _lastHeaderClicked = null;
         ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
@@ -220,12 +221,13 @@ namespace myplayer
         void timer1_Tick(object sender, EventArgs e)
         {
             music = FolderProcessing.GetObservableFromDB(dirpath + "\\" + filename, filter, sortString, sortOrder);
-            if (music.Count != Music.Count)
+            if (music.Count != Music.Count || needToSort)
             {
                 Music = music;
                 listView1.ItemsSource = Music;
                 statusText = "Песен: " + Music.Count;
                 statusBarText.Text = statusText;
+                needToSort = false;
             }
         }
 
@@ -312,6 +314,7 @@ namespace myplayer
                     }
                     _lastHeaderClicked = headerClicked;
                     _lastDirection = direction;
+                    needToSort = true;
                     timer1_Tick(sender, e);
                 }
             }
