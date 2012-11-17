@@ -2,8 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Brushes.xaml" />
-        
-        <ResourceDictionary Source="Buttons.xaml" />
         <ResourceDictionary Source="Slider.xaml" />
         <ResourceDictionary Source="HeaderArrows.xaml" />
         <ResourceDictionary Source="Parser.xaml" />

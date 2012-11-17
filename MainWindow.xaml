@@ -4,11 +4,12 @@
         xmlns:tools="clr-namespace:MyPlayer"
         xmlns:s="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:p="clr-namespace:System;assembly=mscorlib"
-        Title="MainWindow" Height="350" Width="625" WindowState="Maximized">
+        xmlns:basic="clr-namespace:CustomControl.Controls.Basic"
+        Title="MainWindow" Height="350" Width="625" WindowState="Maximized" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Styles.xaml" />
+                <ResourceDictionary Source="Styles\Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -90,29 +91,91 @@
                 <ColumnDefinition Width="32" />
                 <ColumnDefinition Width="48" />
                 <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="32" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="120" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Style="{StaticResource BackwardButton}" Background="#FF1D5BBA"
-                    Name="Backward" Click="Backward_Click" Focusable="False" >
-                
-            </Button>
-            <Button Grid.Column="1" Style="{StaticResource PlayButton}" Background="#FF1D5BBA"
+            <basic:Button Grid.Column="0"  Background="#FF1D5BBA"
+                    x:Name="Backward" Click="Backward_Click" Focusable="False" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Path Stretch="Fill" Fill="LightGray" Data="F1 M 20.5,17.5L 12,24L 20.5,30.5L 20.5,17.5 Z M 31.5,17.5L 23,24L 31.5,30.5L 31.5,17.5 Z  "/>
+                </Grid>
+            </basic:Button>
+            
+            
+            <basic:Button Grid.Column="1"  Background="#FF1D5BBA"
                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PlayEnabled}" 
                     Padding="0"
                     Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PlayVisibility}"
-                    Name="Play" Click="Play_Click" Focusable="False" >
-            </Button>
-            <Button Grid.Column="1" Style="{StaticResource PauseButton}" Background="#FF660707"
+                    x:Name="Play" Click="Play_Click" Focusable="False" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Path Stretch="Fill" Fill="LightGray" Data="F1 M 19,14L 31.9999,23.7501L 31.9999,24.5001L 19,34L 19,14 Z "/>
+                </Grid>
+            </basic:Button>
+            <basic:Button Grid.Column="1"  Background="#FF660707"
                     IsEnabled="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PauseEnabled}" 
                     Padding="0" 
                     Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=PauseVisibility}"
-                    Name="Pause" Click="Pause_Click" Focusable="False" >
-            </Button>
-            <Button Grid.Column="2" Style="{StaticResource ForwardButton}" Background="#FF1D5BBA"
-                    Name="Forward" Click="Forward_Click" Focusable="False" >
-            </Button>
-            <Grid Grid.Column="3" Name="LabelGrid">
+                    x:Name="Pause" Click="Pause_Click" Focusable="False" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Path Width="14" Height="18" Canvas.Left="17" Canvas.Top="15" Stretch="Fill" Fill="LightGray" Data="F1 M 17,15L 21,15L 21,33L 17,33L 17,15 Z M 27,15L 31,15L 31,33L 27,33L 27,15 Z "/>
+                </Grid>
+            </basic:Button>
+            <basic:Button Grid.Column="2" Background="#FF1D5BBA"
+                    x:Name="Forward" Click="Forward_Click" Focusable="False" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Path Stretch="Fill" Fill="LightGray" Data="F1 M 12,17.5L 20.5,24L 12,30.5L 12,17.5 Z M 23,17.5L 31.5,24L 23,30.5L 23,17.5 Z  "/>
+                    
+                </Grid>
+            </basic:Button>
+            <basic:Button Grid.Column="3" Background="#FF1D5BBA"
+                    x:Name="Shuffle" Focusable="False" Click="Shuffle_Click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Path Stretch="Fill" Fill="LightGray" 
+                        Data="F1 M 9.00001,29L 13,29L 24.7499,15L 30.25,15L 26,11L 32.5,11L 39,17L 32.5,23L 26,23L 30.25,19L 26,19L 14,33L 9.00001,33L 9.00001,29 Z M 9,19L 9,15L 14,15L 18.75,20.5417L 16.4985,23.1684L 13,19L 9,19 Z M 26,29L 30.25,29L 26,25L 32.5,25L 39,31L 32.5,37L 26,37L 30.25,33L 24.7499,33L 20.1736,27.5474L 22.4643,24.875L 26,29 Z "/>
+                </Grid>
+            </basic:Button>
+            <Grid Grid.Column="4" Name="LabelGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
@@ -137,7 +200,7 @@
                        Name="label3" />
                 </Grid>
             </Grid>
-            <TextBox Grid.Column="4" Grid.Row="0" Height="23" VerticalAlignment="Center"
+            <TextBox Grid.Column="5" Grid.Row="0" Height="23" VerticalAlignment="Center"
                      Name="textBox1" TextChanged="textBox1_TextChanged">
                 <TextBox.Margin>
                     <Thickness Right="10" />

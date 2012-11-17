@@ -119,7 +119,20 @@ namespace myplayer
             }
         }
 
+        public bool ShuffleSongs
+        {
+            get
+            {
+                return shuffleSongs;
+            }
+
+            set
+            {
+                shuffleSongs = value;
+            }
+        }
         private string dirpath;
+        private bool shuffleSongs = false;
         private double progressValue;
         private ObservableCollection<SongDbItems> music;
         private System.Windows.Shell.TaskbarItemProgressState progressState;
@@ -385,9 +398,17 @@ namespace myplayer
             }
             if (listView1.SelectedItems.Count > 0)
             {
-                if (listView1.SelectedIndex > 0)
+                if (listView1.SelectedIndex > 0 || ShuffleSongs)
                 {
-                    listView1.SelectedIndex = listView1.SelectedIndex - 1;
+                    if (ShuffleSongs)
+                    {
+                        Random r = new Random();
+                        listView1.SelectedIndex = r.Next(0, Music.Count);
+                    }
+                    else
+                    {
+                        listView1.SelectedIndex = listView1.SelectedIndex - 1;
+                    }
                 }
                 else
                 {
@@ -398,7 +419,15 @@ namespace myplayer
             }
             else
             {
-                listView1.SelectedIndex = 0;
+                if (ShuffleSongs)
+                {
+                    Random r = new Random();
+                    listView1.SelectedIndex = r.Next(0, Music.Count);
+                }
+                else
+                {
+                    listView1.SelectedIndex = 0;
+                }
             }
             listView1.Focus();
             Play_Click(sender, e);
@@ -420,10 +449,19 @@ namespace myplayer
             PlayPause.Click += ThumbButtonInfo_PauseClick;
             if (listView1.SelectedIndex == -1)
             {
-                listView1.SelectedIndex = 0;
+                if (ShuffleSongs)
+                {
+                    Random r = new Random();
+                    listView1.SelectedIndex = r.Next(0, Music.Count);
+                }
+                else
+                {
+                    listView1.SelectedIndex = 0;
+                }
             }
             label1.Content = Music[listView1.SelectedIndex].Name + " - " + Music[listView1.SelectedIndex].Artist;
             listView1.Focus();
+            listView1.ScrollIntoView(listView1.SelectedItem);
             Player.Play(Music[listView1.SelectedIndex].Path);
             timer2.Start();
         }
@@ -454,9 +492,17 @@ namespace myplayer
             }
             if (listView1.SelectedItems.Count > 0)
             {
-                if (listView1.SelectedIndex < listView1.Items.Count - 1)
+                if (listView1.SelectedIndex < listView1.Items.Count - 1 || ShuffleSongs)
                 {
-                    listView1.SelectedIndex = listView1.SelectedIndex + 1;
+                    if (ShuffleSongs)
+                    {
+                        Random r = new Random();
+                        listView1.SelectedIndex = r.Next(0, Music.Count);
+                    }
+                    else
+                    {
+                        listView1.SelectedIndex = listView1.SelectedIndex + 1;
+                    }
                 }
                 else
                 {
@@ -467,7 +513,15 @@ namespace myplayer
             }
             else
             {
-                listView1.SelectedIndex = 0;
+                if (ShuffleSongs)
+                {
+                    Random r = new Random();
+                    listView1.SelectedIndex = r.Next(0, Music.Count);
+                }
+                else
+                {
+                    listView1.SelectedIndex = 0;
+                }
             }
             listView1.Focus();
             Play_Click(sender, e);
@@ -515,6 +569,19 @@ namespace myplayer
         private void ThumbButtonInfo_PauseClick(object sender, EventArgs e)
         {
             Pause_Click(sender, new RoutedEventArgs());
+        }
+
+        private void Shuffle_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShuffleSongs)
+            {
+                Shuffle.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x1D, 0x5B, 0xBA));
+            }
+            else
+            {
+                Shuffle.Background = Brushes.Black;
+            }
+            ShuffleSongs = !ShuffleSongs;
         }
     }
 }
